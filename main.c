@@ -2,13 +2,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "treinador.h"
-#include "creche.h"
+#include "./include/treinador.h"
+#include "./include/creche.h"
+
 
 // variaveis da situação
 #define NUM_TREINADORES   3
 #define NUM_MONSTROS      1
 #define NUM_CRECHES       NUM_MONSTROS
+
+void* treinador(void* args) {}
 
 // define as características das creches e dos monstros
 Creche creches[NUM_CRECHES];
@@ -17,6 +20,7 @@ int monstrosPorCreche[NUM_CRECHES]    = { 4 };
 int timeToMature[NUM_MONSTROS]        = { 3 };
 
 int main () {
+  printf("DSFDGDFFASSDV\n");
 
   // inicializa as creches
   for (int i = 0; i < NUM_CRECHES; i++)
