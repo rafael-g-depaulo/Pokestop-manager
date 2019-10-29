@@ -12,6 +12,5 @@ Uma vez terminado de depositar seus monstros, ele descansa por 5s, e repete.
 Quando um treinador terminar de depositar todos os seus monstros, ele para. Quando todos os treinadores se livrarem dos seus monstros, a situação está resolvida.
 
 
-
 ### Solução
 Inicialmente será feita uma solução para uma situação com somente um tipo de monstro, e 3 treinadores, com a única creche tendo espaço para 2 treinadores por vez, e 4 monstros por vez
