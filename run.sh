@@ -1,2 +1,3 @@
+make clean
 make
-./pokeprogram -lpthread
+./pokeprogram -lpthread -g

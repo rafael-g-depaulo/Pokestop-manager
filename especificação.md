@@ -13,4 +13,4 @@ Quando um treinador terminar de depositar todos os seus monstros, ele para. Quan
 
 
 ### Solução
-Inicialmente será feita uma solução para uma situação com somente um tipo de monstro, e 3 treinadores, com a única creche tendo espaço para 2 treinadores por vez, e 4 monstros por vez
+Inicialmente será feita uma solução para uma situação com somente um tipo de monstro (4 por treinador), e 3 treinadores, com a única creche tendo espaço para 2 treinadores por vez, e 4 monstros por vez

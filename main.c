@@ -4,30 +4,31 @@
 
 #include "./include/treinador.h"
 #include "./include/creche.h"
-
-
-// variaveis da situação
-#define NUM_TREINADORES   3
-#define NUM_MONSTROS      1
-#define NUM_CRECHES       NUM_MONSTROS
+#include "./include/problem_params.h"
 
 // define as características das creches e dos monstros
 Creche creches[NUM_CRECHES];
-int treinadoresPorCreche[NUM_CRECHES] = { 2 };
-int monstrosPorCreche[NUM_CRECHES]    = { 4 };
-int timeToMature[NUM_MONSTROS]        = { 3 };
+int treinadoresPorCreche[NUM_CRECHES]   = { 2 };
+int quantMonstrosPorTipo[NUM_MONSTROS]  = { 4 };
+int monstrosPorCreche[NUM_CRECHES]      = { 4 };
+int timeToMature[NUM_MONSTROS]          = { 3 };
 
 int main() {
   
-  pthread_t treinadores[5];
+  pthread_t treinadores[NUM_TREINADORES];
+  Treinador treinadoresFicha[NUM_TREINADORES];
+  int monstros[NUM_TREINADORES][NUM_MONSTROS];
 
   // inicializa as creches
   for (int i = 0; i < NUM_CRECHES; i++)
     creches[i] = newCreche(treinadoresPorCreche[i], monstrosPorCreche[i]);
-
   
-  for (long int i = 0; i < NUM_TREINADORES; i++)
-    pthread_create(&treinadores[i], NULL, treinador, (void*) i);
+  for (long int i = 0; i < NUM_TREINADORES; i++) {
+    treinadoresFicha[i] = newTreinador(i, creches);
+    for (int j = 0; j < NUM_MONSTROS; j++)
+      treinadoresFicha[i].monstros[j] = quantMonstrosPorTipo[j];
+    pthread_create(&treinadores[i], NULL, treinador, (void*) &treinadoresFicha[i]);
+  }
 
   for (int i = 0; i < NUM_TREINADORES; i++)
     pthread_join(treinadores[i], NULL);

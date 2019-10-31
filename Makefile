@@ -2,7 +2,7 @@ SRC = $(wildcard *.c)
 OBJ = $(SRC:.c=.o)
 CC = gcc
 
-CFLAGS = -Wall -lpthread
+CFLAGS = -Wall -lpthread -g
 
 pokeprogram: $(OBJ)
 		$(CC) -o $@ $^ $(CFLAGS)
