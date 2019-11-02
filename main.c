@@ -17,21 +17,24 @@ int main() {
   
   pthread_t treinadores[NUM_TREINADORES];
   Treinador treinadoresFicha[NUM_TREINADORES];
-  int monstros[NUM_TREINADORES][NUM_MONSTROS];
+
+  // seeda o rand()
+  srand(time(NULL));
 
   // inicializa as creches
   for (int i = 0; i < NUM_CRECHES; i++)
     creches[i] = newCreche(treinadoresPorCreche[i], monstrosPorCreche[i]);
   
+  // inicializa a ficha de cada treinador e as threads deles
   for (long int i = 0; i < NUM_TREINADORES; i++) {
-    treinadoresFicha[i] = newTreinador(i, creches);
-    for (int j = 0; j < NUM_MONSTROS; j++)
-      treinadoresFicha[i].monstros[j] = quantMonstrosPorTipo[j];
+    treinadoresFicha[i] = newTreinador(i, creches, quantMonstrosPorTipo);
     pthread_create(&treinadores[i], NULL, treinador, (void*) &treinadoresFicha[i]);
   }
 
-  for (int i = 0; i < NUM_TREINADORES; i++)
+  for (int i = 0; i < NUM_TREINADORES; i++) {
     pthread_join(treinadores[i], NULL);
+    treinadorFree(&treinadoresFicha[i]);
+  }
 
   return 0;
 }

@@ -1,3 +1,3 @@
 make clean
 make
-./pokeprogram -lpthread -g
+./pokeprogram -lpthread -Wunused-variable -Wint-conversion
