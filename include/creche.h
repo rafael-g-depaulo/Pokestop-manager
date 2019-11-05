@@ -7,9 +7,10 @@
 typedef struct Creche {
   sem_t treinadores;
   sem_t monstros;
-
+  pthread_mutex_t checarVagas;
+  int timeToMature;
 } Creche;
 
-Creche newCreche(int numMaxTreinadores, int numMaxMonstros);
+Creche newCreche(int numMaxTreinadores, int numMaxMonstros, int timeToMature);
 
 #endif /* __CRECHE__ */

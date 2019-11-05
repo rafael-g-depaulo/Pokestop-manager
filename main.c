@@ -23,7 +23,7 @@ int main() {
 
   // inicializa as creches
   for (int i = 0; i < NUM_CRECHES; i++)
-    creches[i] = newCreche(treinadoresPorCreche[i], monstrosPorCreche[i]);
+    creches[i] = newCreche(treinadoresPorCreche[i], monstrosPorCreche[i], timeToMature[i]);
   
   // inicializa a ficha de cada treinador e as threads deles
   for (long int i = 0; i < NUM_TREINADORES; i++) {
