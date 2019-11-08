@@ -8,10 +8,10 @@
 
 // define as características das creches e dos monstros
 Creche creches[NUM_CRECHES];
-int treinadoresPorCreche[NUM_CRECHES]   = { 2 };
-int quantMonstrosPorTipo[NUM_MONSTROS]  = { 4 };
-int monstrosPorCreche[NUM_CRECHES]      = { 4 };
-int timeToMature[NUM_MONSTROS]          = { 3 };
+int treinadoresPorCreche[NUM_CRECHES]   = { 2, 2 };
+int quantMonstrosPorTipo[NUM_MONSTROS]  = { 4, 7 };
+int monstrosPorCreche[NUM_CRECHES]      = { 4, 6 };
+int timeToMature[NUM_MONSTROS]          = { 3, 9 };
 
 int main() {
   

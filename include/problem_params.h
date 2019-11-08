@@ -4,8 +4,8 @@
 #include "./creche.h"
 
 // variaveis da situação
-#define NUM_TREINADORES   3
-#define NUM_MONSTROS      1
+#define NUM_TREINADORES   6
+#define NUM_MONSTROS      2
 #define NUM_CRECHES       NUM_MONSTROS
 
 #endif /* __PROB_PARAMS__ */

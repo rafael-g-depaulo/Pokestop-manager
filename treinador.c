@@ -61,44 +61,32 @@ void* treinador(void* _ficha) {
 
     // tenta pegar um espaço na creche do tipo de monstro escolhido
     if (sem_trywait(&creche->treinadores) == 0) {
+
       // se consegui um espaço, vou depositar meus pokemons
-      printf("Trainer #%d: consegui pegar um espaço na creche %d\n", ficha->id, mType);
+      printf("Trainer #%d: consegui pegar um espaço na recepção creche %d\n", ficha->id, mType);
       
       // tenta reservar vagas para os pokemons que eu quero depositar
+      int vagas = 0;
+      pthread_mutex_lock(&creche->checarVagas);
+      vagas = creche->vagasReservas;
 
-      // TEM QUE CHECAR SE O SEMAFORO TEM A QUANTIDADE CERTA DE VAGAS, NÃO SE ELE TEM 1 DISPONÍVEL
-        int vagas = 0;
-        printf("Trainer #%d: ------------------------------------\n", ficha->id);
-        pthread_mutex_lock(&creche->checarVagas);
-        printf("Trainer #%d: consegui o lock para checar vagas\n", ficha->id);
-        vagas = creche->vagasReservas;
-        printf("Trainer #%d: tem %d vagas\n", ficha->id, vagas);
-      // TEM QUE CHECAR SE O SEMAFORO TEM A QUANTIDADE CERTA DE VAGAS, NÃO SE ELE TEM 1 DISPONÍVEL
       if (vagas >= mQnt) {
         creche->vagasReservas -= mQnt;
         pthread_mutex_unlock(&creche->checarVagas);
         
-        printf("Trainer #%d: tem vagas o suficiente! (tem %d vagas)\n", ficha->id, vagas);
-        for (int i = 0, errNum = 0; i < mQnt; i++) {
+        printf("Trainer #%d: fiz as reservas para os %d monstros do tipo $d que eu vou depositar\n", ficha->id, mQnt, mType);
+        for (int i = 0; i < mQnt; i++) {
+
           // deposita o monstro 
           sleep(1);
           ficha->monstros[mType]--;
           totalMonstros--;
 
           pthread_create(&monstros[mType][ficha->monstros[mType]], NULL, monstro, (void*) creche);
-          printf("Trainer #%d: depositei 1 monstro\n", ficha->id);
-        }
-        
-        // demorei 1 segundo para depositar cada monstro
-        sleep(mQnt);
-
-        for (int i = 0, errNum = 0; i < mQnt; i++) {
-          printf("Trainer #%d: 1 monstro meu amadureceu\n", ficha->id);
-          sem_post(&creche->monstros);
+          printf("Trainer #%d: depositei 1 monstro do tipo %d\n", ficha->id, mType);
         }
 
-        sem_getvalue(&creche->monstros, &vagas);
-        printf("Trainer #%d: agora tem %d vagas\n", ficha->id, vagas);
+        printf("Trainer #%d: agora tem %d vagas\n", ficha->id, creche->vagasReservas);
 
         // espera um pouco e deposita seus pokemons de novo
         if (totalMonstros > 0)
@@ -116,7 +104,7 @@ void* treinador(void* _ficha) {
       // sem_post(&creche->treinadores);   // libera o semáforo
     } else {
       // se não consegui um espaço, vou esperar um pouco e tentar depois
-      printf("Trainer #%d: NÃO CONSEGUI espaço na creche %d\n", ficha->id, mType);
+      printf("Trainer #%d: não consegui espaço na recepção da creche %d\n", ficha->id, mType);
       sleep(1);
     }
   }
