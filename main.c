@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "./include/treinador.h"
-#include "./include/creche.h"
-#include "./include/problem_params.h"
+#include "include/treinador.h"
+#include "include/creche.h"
+#include "include/problem_params.h"
 
 // define as características das creches e dos monstros
 Creche creches[NUM_CRECHES];

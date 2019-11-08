@@ -10,4 +10,4 @@ pokeprogram.out: $(OBJ)
 .PHONY: clean
 
 clean:
-		rm -f $(OBJ) pokeprogram
+		rm -f $(OBJ) pokeprogram.out

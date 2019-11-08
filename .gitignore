@@ -1,3 +1,2 @@
 *.o
-pokeprogram
-pokeprogram.out
+*.out

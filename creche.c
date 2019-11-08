@@ -1,4 +1,4 @@
-#include "./include/creche.h"
+#include "include/creche.h"
 #include <semaphore.h>
 #include <pthread.h>
 
@@ -8,5 +8,6 @@ Creche newCreche(int numMaxTreinadores, int numMaxMonstros, int timeToMature) {
   sem_init(&creche.monstros, 0, numMaxMonstros);
   pthread_mutex_init(&creche.checarVagas, NULL);
   creche.timeToMature = timeToMature;
+  creche.vagasReservas = numMaxMonstros;
   return creche;
 }

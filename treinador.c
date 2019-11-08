@@ -5,8 +5,10 @@
 #include <unistd.h>
 #include <semaphore.h>
 
-#include "./include/treinador.h"
-#include "./include/problem_params.h"
+#include "include/creche.h"
+#include "include/treinador.h"
+#include "include/problem_params.h"
+#include "include/monstro.h"
 
 Treinador newTreinador(int id, Creche* creches, int* monstros) {
   Treinador trainer = {
@@ -35,6 +37,15 @@ void* treinador(void* _ficha) {
   for (int i = 0; i < NUM_MONSTROS; i++)
     totalMonstros += ficha->monstros[i];
 
+  int* monstrosInicio = malloc(NUM_MONSTROS * sizeof(int));
+
+  // separar as threads pra cada monstro
+  pthread_t** monstros = malloc(NUM_MONSTROS * sizeof(pthread_t*));
+  for (int tipoMonstros = 0; tipoMonstros < NUM_MONSTROS; tipoMonstros++) {
+
+    monstros[tipoMonstros] = malloc(ficha->monstros[tipoMonstros] * sizeof(pthread_t));
+  }
+
   // início do loop
   while (totalMonstros > 0) {
     printf("Trainer #%d: tenho %d pokemons\n", ficha->id, totalMonstros);
@@ -60,32 +71,26 @@ void* treinador(void* _ficha) {
         printf("Trainer #%d: ------------------------------------\n", ficha->id);
         pthread_mutex_lock(&creche->checarVagas);
         printf("Trainer #%d: consegui o lock para checar vagas\n", ficha->id);
-        sem_getvalue(&creche->monstros, &vagas);
+        vagas = creche->vagasReservas;
         printf("Trainer #%d: tem %d vagas\n", ficha->id, vagas);
       // TEM QUE CHECAR SE O SEMAFORO TEM A QUANTIDADE CERTA DE VAGAS, NÃO SE ELE TEM 1 DISPONÍVEL
       if (vagas >= mQnt) {
+        creche->vagasReservas -= mQnt;
+        pthread_mutex_unlock(&creche->checarVagas);
+        
         printf("Trainer #%d: tem vagas o suficiente! (tem %d vagas)\n", ficha->id, vagas);
-        // pegar o # de semáforos que eu preciso
-        struct timespec tempoWait;
-        if (clock_gettime(CLOCK_REALTIME, &tempoWait) == -1) {
-          printf("thread %d explodiu\n", ficha->id);
-          return NULL;
-        }
-        clock_gettime(CLOCK_REALTIME, &tempoWait);
-        tempoWait.tv_sec += creche->timeToMature;
         for (int i = 0, errNum = 0; i < mQnt; i++) {
-          printf("Trainer #%d: vou depositar 1 monstro\n", ficha->id);
-          // while ((errNum = sem_timedwait(&creche->monstros, &tempoWait)) == -1)
-          //   continue;  
-          // sem_timedwait(&creche->monstros, &tempoWait);
-          sem_wait(&creche->monstros);
-          printf("Trainer #%d: depositei 1 monstro\n", ficha->id);
-          totalMonstros--;
+          // deposita o monstro 
+          sleep(1);
           ficha->monstros[mType]--;
-          // como timedwait funciona?????????
+          totalMonstros--;
+
+          pthread_create(&monstros[mType][ficha->monstros[mType]], NULL, monstro, (void*) creche);
+          printf("Trainer #%d: depositei 1 monstro\n", ficha->id);
         }
-        pthread_mutex_unlock(&creche->checarVagas);      // libera mutex para outros poderem checar as vagas
-        sleep(mQnt);  // demorei 1 segundo para depositar cada monstro
+        
+        // demorei 1 segundo para depositar cada monstro
+        sleep(mQnt);
 
         for (int i = 0, errNum = 0; i < mQnt; i++) {
           printf("Trainer #%d: 1 monstro meu amadureceu\n", ficha->id);
@@ -94,16 +99,11 @@ void* treinador(void* _ficha) {
 
         sem_getvalue(&creche->monstros, &vagas);
         printf("Trainer #%d: agora tem %d vagas\n", ficha->id, vagas);
-        
-        // // se consegui reservar as vagas, vou depositar os pokemons
-        // for (int i = 0; i < mQnt; i++) {
-        //   sleep(1);                                     // demora 1s por monstro para depositar
-        //   ficha->monstros[mType]--;                     // diminui o total de pokemons daquele tipo
-        //   totalMonstros--;                              // diminui o total de pokemons
-        // }
 
+        // espera um pouco e deposita seus pokemons de novo
         if (totalMonstros > 0)
-          sleep(5);                                       // espera um pouco e deposita seus pokemons de novo
+          sleep(5);
+        
       } else {
         pthread_mutex_unlock(&creche->checarVagas);      // libera mutex para outros poderem checar as vagas
 
@@ -121,9 +121,15 @@ void* treinador(void* _ficha) {
     }
   }
 
+  for (int tipoMonstros = 0; tipoMonstros < NUM_MONSTROS; tipoMonstros++) {
+    for (int i = 0; i < monstrosInicio[tipoMonstros]; i++)
+      pthread_join(monstros[tipoMonstros][i], NULL);
+    free(monstros[tipoMonstros]);
+  }
+  free(monstros);
+
   printf("Trainer #%d: terminei a minha jornada!\n", ficha->id);
   pthread_exit(NULL);
-  return NULL;
 }
 
 
