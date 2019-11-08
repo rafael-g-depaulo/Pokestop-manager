@@ -57,7 +57,7 @@ void* treinador(void* _ficha) {
     // variavel temporárias pra ficar mais simples
     Creche* creche = ficha->creches[mType];
 
-    printf("Trainer #%d: pretendo depositar %d pokemons do tipo %d\n", ficha->id, mQnt, mType);
+    printf("Trainer #%d: pretendo depositar %d pokemon do tipo %d\n", ficha->id, mQnt, mType);
 
     // tenta pegar um espaço na creche do tipo de monstro escolhido
     if (sem_trywait(&creche->treinadores) == 0) {
@@ -74,7 +74,7 @@ void* treinador(void* _ficha) {
         creche->vagasReservas -= mQnt;
         pthread_mutex_unlock(&creche->checarVagas);
         
-        printf("Trainer #%d: fiz as reservas para os %d monstros do tipo $d que eu vou depositar\n", ficha->id, mQnt, mType);
+        printf("Trainer #%d: fiz as reservas para os %d pokemon do tipo %d que eu vou depositar\n", ficha->id, mQnt, mType);
         for (int i = 0; i < mQnt; i++) {
 
           // deposita o monstro 
@@ -83,7 +83,7 @@ void* treinador(void* _ficha) {
           totalMonstros--;
 
           pthread_create(&monstros[mType][ficha->monstros[mType]], NULL, monstro, (void*) creche);
-          printf("Trainer #%d: depositei 1 monstro do tipo %d\n", ficha->id, mType);
+          printf("Trainer #%d: depositei 1 pokemon do tipo %d\n", ficha->id, mType);
         }
 
         printf("Trainer #%d: agora tem %d vagas\n", ficha->id, creche->vagasReservas);
